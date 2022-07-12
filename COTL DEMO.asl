@@ -12,22 +12,14 @@ startup
     var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
     vars.Helper = Activator.CreateInstance(type, timer, settings, this);
     vars.Helper.LoadSceneManager = true;
-    
-    if (timer.CurrentTimingMethod == TimingMethod.RealTime)
-	{
-		var mbox = MessageBox.Show(
-			"The Demo for Cult of the Lamb uses in-game time.\nWould you like to switch to it?",
-			"LiveSplit | Cult of the Lamb Demo",
-			MessageBoxButtons.YesNo);
+    #endregion
 
-		if (mbox == DialogResult.Yes) timer.CurrentTimingMethod = TimingMethod.GameTime;
-	}
-    
     settings.Add("Any%");
     settings.CurrentDefaultParent = "Any%";
     settings.Add("Base");
     settings.Add("Dungeon");
-    #endregion
+
+    vars.Helper.AlertGameTime("Cult Of The Lamb");
 }
 
 init
@@ -35,7 +27,7 @@ init
     vars.Helper.TryOnLoad = (Func<dynamic, bool>)(mono =>
     {
         var uim = mono.GetClass("UIManager", 1);
-		vars.Helper["isPaused"] = uim.Make<bool>("_instance", "IsPaused");
+        vars.Helper["isPaused"] = uim.Make<bool>("_instance", "IsPaused");
 
         return true;
     });
@@ -50,22 +42,22 @@ update
 
     current.Scene = vars.Helper.Scenes.Active.Name ?? old.Scene;
     current.IsPaused = vars.Helper["isPaused"].Current;
-    vars.Log(current.Scene);
+    // vars.Log(current.Scene);
 }
 
 split
 {
     if (settings["Base"] && current.Scene == "Base Biome 1" && old.Scene == "BufferScene"){
         return true;
-    };
+    }
 
     if (settings["Dungeon"] && current.Scene == "Dungeon1" && old.Scene == "BufferScene"){
         return true;
-    };
+    }
 
     if (current.Scene == "DemoOver"){
         return true;
-    };
+    }
 }
 
 exit
