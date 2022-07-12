@@ -1,3 +1,6 @@
+// Autosplitter made by MelloYourFello
+// message me on discord @ MelloYourFello#6030 if you're experiencing any issues
+
 state("Cult Of The Lamb") {}
 
 startup
