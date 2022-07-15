@@ -16,8 +16,10 @@ startup
 
     settings.Add("Any%");
     settings.CurrentDefaultParent = "Any%";
+    settings.Add("Escape");
     settings.Add("Base");
     settings.Add("Dungeon");
+    settings.Add("Mini-Boss");
 
     vars.Helper.AlertGameTime("Cult Of The Lamb");
 }
@@ -29,11 +31,15 @@ init
         var uim = mono.GetClass("UIManager", 1);
         vars.Helper["isPaused"] = uim.Make<bool>("_instance", "IsPaused");
 
+        var gm = mono.GetClass("GameManager");
+        vars.Helper["currentDungeonFloor"] = gm.Make<int>("CurrentDungeonFloor");
+
         return true;
     });
 
     vars.Helper.Load();
 }
+
 
 update
 {
@@ -42,7 +48,10 @@ update
 
     current.Scene = vars.Helper.Scenes.Active.Name ?? old.Scene;
     current.IsPaused = vars.Helper["isPaused"].Current;
+    current.CurrentDungeonFloor = vars.Helper["currentDungeonFloor"].Current;
+
     // vars.Log(current.Scene);
+    // vars.Log(current.CurrentDungeonFloor);
 }
 
 split
@@ -58,16 +67,28 @@ split
     if (current.Scene == "DemoOver"){
         return true;
     }
+
+    if (settings["Escape"] && current.CurrentDungeonFloor > old.CurrentDungeonFloor && current.Scene != "Dungeon1"){
+        return true;
+    }
+
+    if (current.CurrentDungeonFloor == 2 && current.Scene == "Dungeon1"){
+        return false;
+    }
+
+    if (settings["Mini-Boss"] && current.CurrentDungeonFloor > old.CurrentDungeonFloor && current.Scene == "Dungeon1"){
+        return true;
+    }
 }
 
 exit
 {
-    vars.Unity.Reset(); 
+    vars.Unity.Dispose(); 
 }
 
 shutdown
 {
-    vars.Unity.Reset();
+    vars.Unity.Dispose();
 }
 
 start
