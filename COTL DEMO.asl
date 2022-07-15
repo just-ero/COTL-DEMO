@@ -54,6 +54,11 @@ update
     // vars.Log(current.CurrentDungeonFloor);
 }
 
+start
+{
+    return current.Scene == "Game Biome Intro";
+}
+
 split
 {
     if (settings["Base"] && current.Scene == "Base Biome 1" && old.Scene == "BufferScene"){
@@ -81,19 +86,9 @@ split
     }
 }
 
-exit
+reset
 {
-    vars.Unity.Dispose(); 
-}
-
-shutdown
-{
-    vars.Unity.Dispose();
-}
-
-start
-{
-    return current.Scene == "Game Biome Intro";
+    return current.Scene == "Main Menu";
 }
 
 isLoading
@@ -101,7 +96,12 @@ isLoading
     return current.IsPaused;
 }
 
-reset
+exit
 {
-    return current.Scene == "Main Menu";
-}   
+    vars.Helper.Dispose(); 
+}
+
+shutdown
+{
+    vars.Helper.Dispose();
+}
